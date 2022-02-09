@@ -1,7 +1,7 @@
-from crypt import methods
 from flask import render_template,url_for,flash,redirect
-from . import main 
+from app import main,db, bcrypt
 from .forms import RegistrationForm, LoginForm
+from ..models import User,Comment
 
 
 # Views
@@ -38,10 +38,12 @@ def register():
     '''
     form = RegistrationForm()
     if form.validate_on_submit():
-        #hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        #user = User(username=form.username.data, email=form.email.data,password=hashed_password)
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('main.index'))
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data, email=form.email.data,password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Your account has been created! You are now able to log in.', 'success')
+        return redirect(url_for('main.login'))
 
     
    
