@@ -47,13 +47,16 @@ def register():
     return render_template('register.html', title = 'Register', form=form)
 
 
-@main.route('/login')
+@main.route('/login', methods=['GET','POST'])
 def login():
 
     '''
     View root page function that returns the login form and its data
     '''
     form = LoginForm()
+    if form.validate_on_submit():
+        return
+
     
    
     

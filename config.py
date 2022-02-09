@@ -6,6 +6,7 @@ class Config:
     '''
     SECRET_KEY = os.urandom(16)
     #config['SECRET_KEY'] = SECRET_KEY
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://kariuki_ndegwa:515021@localhost/pitchy'
     
 class ProdConfig(Config):
             '''
