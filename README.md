@@ -1,6 +1,6 @@
 # Pitchy
 
-A web application where users can create accounts, login, pitch their ideas and other users can either upvte or downvote.
+A web application where users can create accounts, login, pitch their ideas and other users can either upvote or downvote.
 
 ## Author
 Joseph Ndegwa
@@ -15,8 +15,9 @@ Navigate to `https://ndegwa-pitchy.herokuapp.com/` and serve on the web
 * Visual Studio
 
 # To-do
-* Add funtion to save favorite newsrooms
-* Add other pages so that users can navigate news locally
+* Add funtion to save favorite category
+* Add other pages so that users can navigate through different categories
+* Update the upvote and downvote funtionality
 
 # Contact information
 For further enqueries please contact
