@@ -4,7 +4,8 @@ class Config:
     '''
     General configuration parent class
     '''
-    SECRET_KEY = os.environ.get('SECRET_KEY')
+    SECRET_KEY = os.urandom(16)
+    #config['SECRET_KEY'] = SECRET_KEY
     
 class ProdConfig(Config):
             '''

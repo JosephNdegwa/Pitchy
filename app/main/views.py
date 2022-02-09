@@ -30,24 +30,26 @@ def about():
 
 
 @main.route('/register')
-def regiater():
+def register():
 
     '''
-    View root page function that returns the register page and its data
+    View root page function that returns the register form page and its data
     '''
+    form = RegistrationForm()
     
    
     
-    return render_template('register.html')
+    return render_template('register.html', title = 'Register', form=form)
 
 
 @main.route('/login')
 def login():
 
     '''
-    View root page function that returns the login page and its data
+    View root page function that returns the login form and its data
     '''
+    form = LoginForm
     
    
     
-    return render_template('login.html')
+    return render_template('login.html', title='Login', form=form)
