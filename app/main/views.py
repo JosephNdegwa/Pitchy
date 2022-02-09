@@ -53,7 +53,7 @@ def login():
     '''
     View root page function that returns the login form and its data
     '''
-    form = LoginForm
+    form = LoginForm()
     
    
     
