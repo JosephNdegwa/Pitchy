@@ -2,7 +2,7 @@ from flask import render_template,url_for,flash,redirect
 from app import main,db, bcrypt
 from .forms import RegistrationForm, LoginForm
 from ..models import User,Comment
-from flask_login import login_user,current_user
+from flask_login import login_user,current_user, logout_user
 
 
 # Views
@@ -75,3 +75,16 @@ def login():
     
    
     return render_template('login.html', title='Login', form=form)
+
+
+@main.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('main.index'))
+
+
+
+@main.route("/profile")
+def profile():
+    return render_template('profile.html', title='Profile')
+
