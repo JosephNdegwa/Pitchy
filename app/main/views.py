@@ -1,4 +1,5 @@
-from flask import render_template,url_for
+from crypt import methods
+from flask import render_template,url_for,flash,redirect
 from . import main 
 from .forms import RegistrationForm, LoginForm
 
@@ -29,13 +30,17 @@ def about():
     return render_template('about.html')
 
 
-@main.route('/register')
+@main.route('/register', methods=['GET','POST'])
 def register():
 
     '''
     View root page function that returns the register form page and its data
     '''
     form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('main.index'))
+
     
    
     
