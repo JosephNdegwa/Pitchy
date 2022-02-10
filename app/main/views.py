@@ -94,9 +94,9 @@ def profile():
 
 
 
-@main.route("/comment/new", methods=['GET','POST'])
+@main.route("/pitch", methods=['GET','POST'])
 @login_required
-def new_comment():
+def pitch():
     form = CommentForm()
     if form.validate_on_submit():
          flash('Your pitch has been submitted!', 'success')
