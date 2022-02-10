@@ -2,7 +2,7 @@ from turtle import title
 from flask import render_template,url_for,flash,redirect
 from . import main
 from app import db, bcrypt
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, CommentForm
 from ..models import User,Comment
 from flask_login import login_user,current_user, logout_user,login_required
 
@@ -86,7 +86,7 @@ def logout():
 
 
 
-@main.route("/profile")
+@main.route("/profile", methods=['GET','POST'])
 @login_required
 def profile():
     return render_template('profile.html', title='Profile')
@@ -94,8 +94,13 @@ def profile():
 
 
 
-@main.route("/comment/new")
+@main.route("/comment/new", methods=['GET','POST'])
 @login_required
-def logout():
-    return render_template('pitch.html', title='New Pitch')
+def new_comment():
+    form = CommentForm()
+    if form.validate_on_submit():
+         flash('Your pitch has been submitted!', 'success')
+         return redirect(url_for('main.index'))
+
+    return render_template('pitch.html', tditle='New Pitch', form=form)
 
