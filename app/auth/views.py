@@ -1,15 +1,16 @@
 from flask import render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user
 from app.models import User
-from app.auth import main
+from ..auth import auth
 from app.auth import forms
 from app import db
+from ..email import mail_message
 
-@main.route('/login', methods=['GET', 'POST'])
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
     # go back to homepage if the user is logged in
     if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('auth.index'))
     
     # create instance of login form to be passed in to template
     form = forms.LoginForm()
@@ -27,27 +28,27 @@ def login():
         login_user(user, remember=form.remember_me.data)
 
         # redirect to home - TODO - change to posts route
-        return redirect(url_for('main.index')) 
+        return redirect(url_for('auth.index')) 
 
     return render_template('auth/login.html', form=form)
 
-@main.route('/logout')
+@auth.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('main.index'))
+    return redirect(url_for('auth.index'))
 
-@main.route('/signup', methods=["GET", "POST"])
+@auth.route('/signup', methods=["GET", "POST"])
 def signup():
     # go back to homepage if the user is logged in
     if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('auth.index'))
     form = forms.SignupForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash("Congratulations, you are now a registered user!")
+        flash("You are now signed up!")
         return redirect(url_for('auth.login'))
     return render_template('auth/signup.html', form=form)
 
