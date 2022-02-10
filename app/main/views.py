@@ -1,4 +1,3 @@
-from turtle import title
 from flask import render_template,url_for,flash,redirect
 from . import main
 from app import db, bcrypt
@@ -15,7 +14,7 @@ def index():
     View root page function that returns the index page and its data
     '''
     
-   
+    comments=Comment.query.all()
     
     return render_template('index.html')
 
@@ -99,8 +98,11 @@ def profile():
 def pitch():
     form = CommentForm()
     if form.validate_on_submit():
-         flash('Your pitch has been submitted!', 'success')
-         return redirect(url_for('main.index'))
+        comment = Comment(title=form.data,content=form.content.data, author=current_user)
+        db.session.add(comment)
+        db.session.commit()
+        flash('Your pitch has been submitted!', 'success')
+        return redirect(url_for('main.index'))
 
-    return render_template('pitch.html', tditle='New Pitch', form=form)
+    return render_template('pitch.html', title='New Pitch', form=form)
 

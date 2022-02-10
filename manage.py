@@ -9,6 +9,11 @@ app = create_app('development')
 
 manager = Manager(app)
 manager.add_command('server',Server)
+def test():
+    """Run the unit tests."""
+    import unittest
+    tests = unittest.TestLoader().discover('tests')
+    unittest.TextTestRunner(verbosity=2).run(tests)
 
 
 migrate = Migrate(app,db)
