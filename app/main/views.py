@@ -1,3 +1,4 @@
+from turtle import title
 from flask import render_template,url_for,flash,redirect
 from . import main
 from app import db, bcrypt
@@ -89,4 +90,12 @@ def logout():
 @login_required
 def profile():
     return render_template('profile.html', title='Profile')
+
+
+
+
+@main.route("/comment/new")
+@login_required
+def logout():
+    return render_template('pitch.html', title='New Pitch')
 
