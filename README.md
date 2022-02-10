@@ -6,7 +6,7 @@ A web application where users can create accounts, login, pitch their ideas and 
 Joseph Ndegwa
 
 ## Setup and installation
-Navigate to `https://ndegwa-pitchy.herokuapp.com/` and serve on the web
+Navigate to `https://ndegwa-pitchy98.herokuapp.com/` and serve on the web
 
 ## Technologies
 * Python
