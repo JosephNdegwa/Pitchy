@@ -1,38 +1,14 @@
-from xml.dom import ValidationErr
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from wtforms import validators
 from app.models import User
 
+class AddForm(FlaskForm):
+    body = TextAreaField('Pitch', [validators.optional(), validators.length(max=200)])
+    category = SelectField('Category', choices=[( 'pickup', 'Pickup Lines'), ('interview', 'Interview'), ('product', 'Product'), ('promotion', 'Promotion')])
+    submit = SubmitField('Submit')
 
-class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(),Length(min=2, max=20)])
-    email = StringField('Email',validators=[DataRequired(), Email()])
-    password = PasswordField('Password',validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password',validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Sign Up')
-
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user:
-            raise ValidationErr('That username is taken. Please choose another one!')
-
-    
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user:
-            raise ValidationErr('That email is taken. Please choose another one!')
-
-
-
-class LoginForm(FlaskForm):
-    email = StringField('Email',validators=[DataRequired(), Email()])
-    password = PasswordField('Password',validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
-    submit = SubmitField('Login')
-
-
-class CommentForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
-    submit = SubmitField('Post')
+class AddCommentForm(FlaskForm):
+    body = TextAreaField('Comment', [validators.optional(), validators.length(max=200)])
+    submit = SubmitField('Submit')

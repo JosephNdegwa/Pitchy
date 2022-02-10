@@ -1,3 +1,6 @@
 from flask import Blueprint
-main = Blueprint('main',__name__)
-from . import views,errors
+from pip import main
+
+main = Blueprint('main', __name__)
+
+from app.main import forms, views

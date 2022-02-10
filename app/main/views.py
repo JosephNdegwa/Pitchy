@@ -1,108 +1,68 @@
-from flask import render_template,url_for,flash,redirect
-from . import main
-from app import db, bcrypt
-from .forms import RegistrationForm, LoginForm, CommentForm
-from ..models import User,Comment
-from flask_login import login_user,current_user, logout_user,login_required
+from flask import render_template, redirect, url_for, flash
+from flask_login import current_user, login_user, logout_user
+from app import main
+from app import db
+from app.models import User, Pitch, Comment
+from ..main import forms
 
-
-# Views
 @main.route('/')
 def index():
+    return render_template('index.html') 
 
-    '''
-    View root page function that returns the index page and its data
-    '''
-    
-    comments=Comment.query.all()
-    
-    return render_template('index.html')
+@main.route('/category/<category>')
+def category(category):
+    # retrieve all pitches in category
+    pitches = Pitch().query.filter_by(category=category).all()
 
+    if pitches:
+        pitches.reverse()
+    return render_template('category.html', category=category, pitches=pitches)
 
+@main.route('/add-pitch', methods=['GET', 'POST'])
+def add_pitch():
+    # go to login in page if user is not logged in
+    if current_user.is_anonymous:
+        return redirect(url_for('auth.login'))
 
-@main.route('/about')
-def about():
+    form = forms.AddForm()
 
-    '''
-    View root page function that returns the index page and its data
-    '''
-    
-   
-    
-    return render_template('about.html')
-
-
-@main.route('/register', methods=['GET','POST'])
-def register():
-
-    '''
-    View root page function that returns the register form page and its data
-    '''
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index)'))
-    form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data,password=hashed_password)
-        db.session.add(user)
+        pitch = Pitch(author=current_user, body=form.body.data, category=form.category.data)
+        db.session.add(pitch)
         db.session.commit()
-        flash('Your account has been created! You are now able to log in.', 'success')
-        return redirect(url_for('main.login'))
-
+        return redirect(url_for('main.index')) 
     
+    return render_template('add_pitch.html', form=form)
+
+@main.route('/user/<user>')
+def user(user):
+    # go to login in page if user is not logged in
+    if current_user.is_anonymous:
+        return redirect(url_for('auth.login'))
+
+    user = User.query.filter_by(username=user).first()
+    pitches = Pitch.query.filter_by(author=user).all()
+    return render_template('user.html', user=user, pitches=pitches)
+
+@main.route('/comments/<pitch>')
+def comments(pitch):
+    comments = Comment.query.filter_by(pitch=Pitch.query.get(pitch)).all()
    
-    
-    return render_template('register.html', title = 'Register', form=form)
+    return render_template('comments.html', pitch=Pitch.query.get(pitch), comments=comments)
 
+@main.route('/add-comment/<pitch>', methods=['GET', 'POST'])
+def add_comment(pitch):
+    # go to login in page if user is not logged in
+    if current_user.is_anonymous:
+        return redirect(url_for('auth.login'))
 
-@main.route('/login', methods=['GET','POST'])
-def login():
+    form = forms.AddCommentForm()
 
-    '''
-    View root page function that returns the login form and its data
-    '''
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index)'))
-    form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password,form.password.data):
-            login_user(user, remember=form.remember.data)
-            return redirect(url_for('main.index'))
-        else:
-            flash('Login Unsuccessful. Please check email and password!','danger')
-        
-
-    
-   
-    return render_template('login.html', title='Login', form=form)
-
-
-@main.route("/logout")
-def logout():
-    logout_user()
-    return redirect(url_for('main.index'))
-
-
-
-@main.route("/profile", methods=['GET','POST'])
-@login_required
-def profile():
-    return render_template('profile.html', title='Profile')
-
-
-
-
-@main.route("/pitch", methods=['GET','POST'])
-@login_required
-def pitch():
-    form = CommentForm()
-    if form.validate_on_submit():
-        comment = Comment(title=form.data,content=form.content.data, author=current_user)
+        comment = Comment(pitch=Pitch.query.get(pitch), body=form.body.data)
         db.session.add(comment)
         db.session.commit()
-        flash('Your pitch has been submitted!', 'success')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.comments', pitch=pitch)) 
 
-    return render_template('pitch.html', title='New Pitch', form=form)
-
+    return render_template('add_comment.html', form=form)
+    
